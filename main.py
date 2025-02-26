@@ -1,6 +1,5 @@
 import streamlit as st
-import webbrowser
-import time
+import streamlit.components.v1 as components
 
 # Título de la aplicación
 st.title("Abrir Enlaces desde un Archivo")
@@ -14,17 +13,21 @@ if uploaded_file is not None:
     
     # Filtrar enlaces vacíos
     links = [link.strip() for link in links if link.strip()]
-    
+
     if links:
         st.write("### Enlaces encontrados:")
         for link in links:
             st.write(f"- {link}")
 
-        # Botón para abrir los enlaces
-        if st.button("Abrir Enlaces"):
+        # Botón para abrir los enlaces automáticamente
+        if st.button("Abrir Enlaces Automáticamente 🚀"):
+            # Generar el código JavaScript para abrir los enlaces en nuevas pestañas
+            js_code = "<script>\n"
             for link in links:
-                webbrowser.open(link)
-                time.sleep(1)  # Esperar 1 segundo entre cada enlace
-            st.success("Enlaces abiertos correctamente 🚀")
+                js_code += f'window.open("{link}", "_blank");\n'
+            js_code += "</script>"
+
+            # Inyectar el código JavaScript con `components.html()`
+            components.html(js_code)
     else:
         st.error("El archivo está vacío o no contiene enlaces.")
